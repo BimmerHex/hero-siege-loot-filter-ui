@@ -1,0 +1,64 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - activeFilterId: string (optional)
+    //
+    // Collection: users/{userId}/filters
+    // Document ID: {filterId}
+    // Fields:
+    //   - name: string (required)
+    //   - config: string (required) - JSON stringified AppFilterConfig
+    //   - updatedAt: number (required) - Date.now() timestamp
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidUserProfile(data) {
+      return hasOnlyAllowedFields(['activeFilterId']) &&
+             (!('activeFilterId' in data) || data.activeFilterId == null || (data.activeFilterId is string && data.activeFilterId.size() < 100));
+    }
+
+    function isValidFilter(data) {
+      return hasOnlyAllowedFields(['name', 'config', 'updatedAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.config is string && data.config.size() < 1000000 && // 1MB limit for config
+             data.updatedAt is number;
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow update: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow delete: if isOwner(userId);
+
+      match /filters/{filterId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidFilter(request.resource.data);
+        allow update: if isOwner(userId) && isValidFilter(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}

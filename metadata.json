@@ -1,0 +1,5 @@
+{
+  "name": "Hero Siege Loot Filter",
+  "description": "A custom loot filter generator for Hero Siege with Firebase integration.",
+  "requestFramePermissions": []
+}

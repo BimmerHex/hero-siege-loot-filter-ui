@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Stores user preferences like active filter.",
+      "type": "object",
+      "properties": {
+        "activeFilterId": {
+          "type": "string",
+          "description": "The ID of the currently active filter."
+        }
+      }
+    },
+    "SavedFilter": {
+      "title": "SavedFilter",
+      "description": "Stores a single saved filter configuration.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the filter."
+        },
+        "config": {
+          "type": "string",
+          "description": "JSON stringified AppFilterConfig."
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "When the filter was last updated (Date.now())."
+        }
+      },
+      "required": ["name", "config", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "UserProfile"
+      },
+      "description": "User profile data."
+    },
+    "/users/{userId}/filters/{filterId}": {
+      "schema": {
+        "$ref": "SavedFilter"
+      },
+      "description": "User's saved filters."
+    }
+  }
+}
