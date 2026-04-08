@@ -19,6 +19,7 @@ interface FilterContextType {
   copyModsToAll: (sourceCategory: ItemCategory) => void;
   copyModsToSpecific: (sourceCategory: ItemCategory, targetCategory: ItemCategory) => void;
   isSaving: boolean;
+  isDirty: boolean;
 }
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -27,6 +28,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [config, setConfig] = useState<AppFilterConfig>(createDefaultAppFilterConfig());
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([]);
   const [activeFilterId, setActiveFilterId] = useState<string | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
   
   const [isSaving, setIsSaving] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
@@ -88,6 +90,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const updateConfig = (newConfig: AppFilterConfig) => {
     setConfig(newConfig);
+    setIsDirty(true);
   };
 
   const saveNewFilter = async (name: string) => {
@@ -102,6 +105,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       });
       await setDoc(doc(db, 'users', userId), { activeFilterId: newDocRef.id }, { merge: true });
       setActiveFilterId(newDocRef.id);
+      setIsDirty(false);
     } catch (error) {
       console.error("Error saving new filter:", error);
     } finally {
@@ -117,6 +121,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         config: JSON.stringify(config),
         updatedAt: Date.now()
       }, { merge: true });
+      setIsDirty(false);
     } catch (error) {
       console.error("Error updating filter:", error);
     } finally {
@@ -128,8 +133,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     if (!userId) return;
     const filter = savedFilters.find(f => f.id === id);
     if (filter) {
-      setConfig(filter.config);
+      setConfig(JSON.parse(JSON.stringify(filter.config)));
       setActiveFilterId(id);
+      setIsDirty(false);
       await setDoc(doc(db, 'users', userId), { activeFilterId: id }, { merge: true });
     }
   };
@@ -150,9 +156,11 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const resetFilter = () => {
     setConfig(createDefaultAppFilterConfig());
     setActiveFilterId(null);
+    setIsDirty(false);
   };
 
   const copyModsToAll = (sourceCategory: ItemCategory) => {
+    setIsDirty(true);
     setConfig(prevConfig => {
       const sourceMods = JSON.parse(JSON.stringify(prevConfig[sourceCategory].mods));
       const newConfig = { ...prevConfig };
@@ -172,6 +180,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const copyModsToSpecific = (sourceCategory: ItemCategory, targetCategory: ItemCategory) => {
+    setIsDirty(true);
     setConfig(prevConfig => {
       const sourceMods = JSON.parse(JSON.stringify(prevConfig[sourceCategory].mods));
       const newConfig = { ...prevConfig };
@@ -188,7 +197,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   return (
     <FilterContext.Provider value={{ 
-      config, updateConfig, userId, isAuthReady, isSaving,
+      config, updateConfig, userId, isAuthReady, isSaving, isDirty,
       savedFilters, activeFilterId, saveNewFilter, updateCurrentFilter, loadFilter, deleteFilter,
       resetFilter, copyModsToAll, copyModsToSpecific
     }}>

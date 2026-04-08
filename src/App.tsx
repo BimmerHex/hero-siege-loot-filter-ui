@@ -24,7 +24,7 @@ const MainApp = () => {
   const [filterToDelete, setFilterToDelete] = useState<string | null>(null);
 
   const { 
-    userId, isAuthReady, isSaving, 
+    userId, isAuthReady, isSaving, isDirty,
     savedFilters, activeFilterId, 
     saveNewFilter, updateCurrentFilter, loadFilter, deleteFilter,
     updateConfig, resetFilter, config
@@ -379,11 +379,11 @@ const MainApp = () => {
                 <p className="text-gray-500 text-center py-8">No saved filters found.</p>
               ) : (
                 savedFilters.map(filter => (
-                  <div key={filter.id} className={`flex items-center justify-between p-3 rounded-lg border ${activeFilterId === filter.id ? 'bg-indigo-900/20 border-indigo-500/50' : 'bg-gray-950 border-gray-800 hover:border-gray-700'}`}>
+                  <div key={filter.id} className={`flex items-center justify-between p-3 rounded-lg border ${activeFilterId === filter.id && !isDirty ? 'bg-indigo-900/20 border-indigo-500/50' : 'bg-gray-950 border-gray-800 hover:border-gray-700'}`}>
                     <div>
                       <div className="font-medium text-white flex items-center space-x-2">
                         <span>{filter.name}</span>
-                        {activeFilterId === filter.id && <span className="text-[10px] uppercase tracking-wider bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded">Active</span>}
+                        {(activeFilterId === filter.id && !isDirty) && <span className="text-[10px] uppercase tracking-wider bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded">Active</span>}
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
                         Updated: {new Date(filter.updatedAt).toLocaleString()}
@@ -392,7 +392,7 @@ const MainApp = () => {
                     <div className="flex items-center space-x-2">
                       <motion.button 
                         onClick={() => { loadFilter(filter.id); setIsLoadOpen(false); }}
-                        disabled={activeFilterId === filter.id}
+                        disabled={activeFilterId === filter.id && !isDirty}
                         className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-800 disabled:text-gray-500 text-white text-sm rounded-lg transition-all font-medium"
                         whileTap={{ scale: 0.95 }}
                       >

@@ -16,7 +16,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onCategoryClick }) => {
   const [isSuggesting, setIsSuggesting] = useState(false);
 
   const handleRarityChange = (category: ItemCategory, rarity: Rarity, tier: Tier, value: boolean) => {
-    const newConfig = { ...config };
+    const newConfig = JSON.parse(JSON.stringify(config));
     newConfig[category].rarities[rarity][tier] = value;
     updateConfig(newConfig);
   };
@@ -25,7 +25,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onCategoryClick }) => {
     const currentFilter = config[category].rarities[rarity];
     const allChecked = TIERS.every(t => currentFilter[t]);
     const newValue = !allChecked;
-    const newConfig = { ...config };
+    const newConfig = JSON.parse(JSON.stringify(config));
     newConfig[category].rarities[rarity] = {
       D: newValue, C: newValue, B: newValue, A: newValue, S: newValue
     };
@@ -37,7 +37,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onCategoryClick }) => {
     setIsSuggesting(true);
     try {
       const suggestion = await suggestGlobalFilterConfig(buildName, difficulty);
-      const newConfig = { ...config };
+      const newConfig = JSON.parse(JSON.stringify(config));
       
       ITEM_CATEGORIES.forEach(cat => {
         if (suggestion[cat]) {

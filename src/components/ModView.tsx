@@ -58,13 +58,13 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
   });
 
   const handleSocketChange = (socket: number, value: boolean) => {
-    const newConfig = { ...config };
+    const newConfig = JSON.parse(JSON.stringify(config));
     newConfig[category].sockets[socket] = value;
     updateConfig(newConfig);
   };
 
   const handleWeaponTypeChange = (weaponType: string, value: boolean) => {
-    const newConfig = { ...config };
+    const newConfig = JSON.parse(JSON.stringify(config));
     if (!newConfig[category].weaponTypes) {
       newConfig[category].weaponTypes = WEAPON_TYPES.reduce((acc, type) => ({ ...acc, [type]: false }), {});
     }
@@ -73,7 +73,7 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
   };
 
   const handleModChange = (modId: string, tier: Tier, value: ModState) => {
-    const newConfig = { ...config };
+    const newConfig = JSON.parse(JSON.stringify(config));
     if (!newConfig[category].mods[modId]) {
       newConfig[category].mods[modId] = { D: false, C: false, B: false, A: false, S: false };
     }
@@ -86,7 +86,7 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
     const allOfState = TIERS.every(t => currentFilter[t] === state);
     const newValue: ModState = allOfState ? false : state;
     
-    const newConfig = { ...config };
+    const newConfig = JSON.parse(JSON.stringify(config));
     newConfig[category].mods[modId] = {
       D: newValue, C: newValue, B: newValue, A: newValue, S: newValue
     };
