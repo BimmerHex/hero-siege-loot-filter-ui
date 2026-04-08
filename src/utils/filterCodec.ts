@@ -24,6 +24,109 @@ const TIER_KEYS: Record<string, Tier> = {
   tr4: 'S'
 };
 
+const CATEGORY_TO_SLOT_KEY: Record<string, string> = Object.entries(ITEM_SLOT_KEYS).reduce((acc, [key, cat]) => {
+  acc[cat] = key;
+  return acc;
+}, {} as any);
+
+const TIER_TO_KEY: Record<string, string> = Object.entries(TIER_KEYS).reduce((acc, [key, tier]) => {
+  acc[tier] = key;
+  return acc;
+}, {} as any);
+
+const MOD_ID_TO_STAT_IDS: Record<string, number[]> = {};
+Object.entries(STAT_ID_TO_MOD_ID).forEach(([statId, modId]) => {
+  if (!MOD_ID_TO_STAT_IDS[modId]) MOD_ID_TO_STAT_IDS[modId] = [];
+  MOD_ID_TO_STAT_IDS[modId].push(Number(statId));
+});
+
+const ALL_STAT_IDS = Object.keys(STAT_ID_TO_MOD_ID).map(Number);
+
+export const encodeBase64Filter = (config: AppFilterConfig): string => {
+  const output: any = { version: 2 };
+
+  // Weapon Types (wtc)
+  let wtc = 0;
+  let allWeaponTypesEnabled = true;
+  WEAPON_TYPES.forEach((type, index) => {
+    if (config.Weapon.weaponTypes?.[type]) {
+      wtc |= (1 << (index + 1));
+    } else {
+      allWeaponTypesEnabled = false;
+    }
+  });
+  
+  if (!allWeaponTypesEnabled) {
+    output.wtc = wtc;
+  }
+
+  // Categories
+  Object.entries(CATEGORY_TO_SLOT_KEY).forEach(([category, slotKey]) => {
+    const categoryConfig = config[category as ItemCategory];
+    const slotData: any = {};
+
+    // Sockets (soc)
+    let soc = 0;
+    let allSocketsEnabled = true;
+    for (let i = 1; i <= 6; i++) {
+      if (categoryConfig.sockets[i]) {
+        soc |= (1 << (i - 1));
+      } else {
+        allSocketsEnabled = false;
+      }
+    }
+    
+    // User requirement: If all 6 sockets are active, omit soc.
+    // If any are hidden, include soc (even if 0).
+    if (!allSocketsEnabled) {
+      slotData.soc = soc;
+    }
+
+    // Tiers
+    TIERS.forEach(tier => {
+      const tierKey = TIER_TO_KEY[tier];
+      const tierData: any = {};
+      
+      // Rarities (rs)
+      let rs = 0;
+      RARITIES.forEach((rarity, index) => {
+        if (categoryConfig.rarities[rarity][tier]) {
+          rs |= (1 << index);
+        }
+      });
+      tierData.rs = rs;
+
+      // Mods (hs, hls)
+      const hs: number[] = [];
+      const hls: number[] = [];
+
+      // Iterate over ALL possible stats to ensure a strict filter
+      ALL_STAT_IDS.forEach(statId => {
+        const modId = STAT_ID_TO_MOD_ID[statId];
+        const state = categoryConfig.mods[modId]?.[tier];
+
+        if (state === 'yellow') {
+          hls.push(statId);
+        } else if (state === 'red') {
+          // Visible, do nothing
+        } else {
+          // Hidden (state is false or undefined)
+          hs.push(statId);
+        }
+      });
+
+      if (hs.length > 0) tierData.hs = hs;
+      if (hls.length > 0) tierData.hls = hls;
+
+      slotData[tierKey] = tierData;
+    });
+
+    output[slotKey] = slotData;
+  });
+
+  return btoa(JSON.stringify(output));
+};
+
 export const decodeBase64Filter = (base64String: string): AppFilterConfig => {
   try {
     const jsonString = atob(base64String);
