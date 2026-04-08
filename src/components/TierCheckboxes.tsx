@@ -10,7 +10,7 @@ export const TierCheckboxes: React.FC<TierCheckboxesProps> = ({ filter, onChange
   return (
     <div className="flex space-x-2">
       {TIERS.map((tier) => (
-        <label key={tier} className="flex items-center space-x-1 cursor-pointer group">
+        <label key={tier} className="flex items-center space-x-1 cursor-pointer group active:scale-90 transition-transform">
           <div className="relative flex items-center justify-center">
             <input
               type="checkbox"

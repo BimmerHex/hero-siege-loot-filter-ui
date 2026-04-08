@@ -97,9 +97,9 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
         
         <button 
           onClick={onBack}
-          className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors mb-4"
+          className="flex items-center space-x-2 text-gray-400 hover:text-white transition-all active:scale-95 mb-4 group cursor-pointer"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           <span>Back to Categories</span>
@@ -342,7 +342,7 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
                         return (
                           <div key={mod.id} className="flex flex-col space-y-1.5">
                             <span 
-                              className="font-medium text-gray-300 cursor-pointer hover:text-white select-none text-sm leading-tight"
+                              className="font-medium text-gray-300 cursor-pointer hover:text-white select-none text-sm leading-tight transition-all active:scale-95 origin-left"
                               onClick={() => toggleMod(mod.id)}
                             >
                               {mod.name}

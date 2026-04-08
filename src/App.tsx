@@ -14,6 +14,8 @@ const MainApp = () => {
   const [isLoadOpen, setIsLoadOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState(false);
+  const [downloadFeedback, setDownloadFeedback] = useState(false);
   const [newFilterName, setNewFilterName] = useState('');
   const [importBase64, setImportBase64] = useState('');
   const [exportBase64, setExportBase64] = useState('');
@@ -63,6 +65,9 @@ const MainApp = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      
+      setDownloadFeedback(true);
+      setTimeout(() => setDownloadFeedback(false), 2000);
     } catch (err) {
       setImportError('Invalid Base64 string. Cannot convert to JSON.');
     }
@@ -112,7 +117,7 @@ const MainApp = () => {
             <button
               onClick={updateCurrentFilter}
               disabled={isSaving}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center space-x-2"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 disabled:opacity-50 flex items-center space-x-2 shadow-lg shadow-indigo-500/20"
             >
               {isSaving ? (
                 <>
@@ -135,7 +140,7 @@ const MainApp = () => {
 
           <button
             onClick={resetFilter}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center space-x-2"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -145,7 +150,7 @@ const MainApp = () => {
 
           <button
             onClick={() => setIsSaveAsOpen(true)}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center space-x-2"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -155,7 +160,7 @@ const MainApp = () => {
 
           <button
             onClick={() => setIsImportOpen(true)}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center space-x-2"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -165,7 +170,7 @@ const MainApp = () => {
 
           <button
             onClick={handleExport}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center space-x-2"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -175,7 +180,7 @@ const MainApp = () => {
 
           <button
             onClick={() => setIsLoadOpen(true)}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center space-x-2"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -185,7 +190,7 @@ const MainApp = () => {
 
           <button
             onClick={logOut}
-            className="px-4 py-2 bg-red-900/50 hover:bg-red-900/80 text-red-200 text-sm font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-red-900/30 hover:bg-red-900/60 text-red-200 text-sm font-medium rounded-lg transition-all active:scale-95 border border-red-900/50"
           >
             Sign Out
           </button>
@@ -218,18 +223,34 @@ const MainApp = () => {
             />
             {importError && <p className="text-red-400 text-sm">{importError}</p>}
             <div className="flex justify-end space-x-3 pt-2">
-              <button onClick={() => setIsImportOpen(false)} className="px-4 py-2 text-gray-400 hover:text-white">Cancel</button>
+              <button 
+                onClick={() => setIsImportOpen(false)} 
+                className="px-4 py-2 text-gray-400 hover:text-red-400 transition-all active:scale-95 font-medium"
+              >
+                Cancel
+              </button>
               <button 
                 onClick={handleDownloadJson}
                 disabled={!importBase64.trim()}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-lg disabled:opacity-50 text-sm"
+                className={`px-4 py-2 rounded-lg disabled:opacity-50 text-sm font-medium transition-all active:scale-95 border flex items-center space-x-2 ${
+                  downloadFeedback 
+                    ? 'bg-green-600/20 text-green-400 border-green-500/50' 
+                    : 'bg-gray-800 hover:bg-gray-700 text-gray-200 border-gray-700'
+                }`}
               >
-                Download JSON
+                {downloadFeedback ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                    <span>Downloaded!</span>
+                  </>
+                ) : (
+                  <span>Download JSON</span>
+                )}
               </button>
               <button 
                 onClick={handleImport}
                 disabled={!importBase64.trim()}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 text-sm"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 text-sm font-medium transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
               >
                 Import
               </button>
@@ -256,14 +277,32 @@ const MainApp = () => {
               onClick={e => (e.target as HTMLTextAreaElement).select()}
             />
             <div className="flex justify-end space-x-3 pt-2">
-              <button onClick={() => setIsExportOpen(false)} className="px-4 py-2 text-gray-400 hover:text-white">Close</button>
+              <button 
+                onClick={() => setIsExportOpen(false)} 
+                className="px-4 py-2 text-gray-400 hover:text-red-400 transition-all active:scale-95 font-medium"
+              >
+                Close
+              </button>
               <button 
                 onClick={() => {
                   navigator.clipboard.writeText(exportBase64);
+                  setCopyFeedback(true);
+                  setTimeout(() => setCopyFeedback(false), 2000);
                 }}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm"
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-95 border flex items-center space-x-2 ${
+                  copyFeedback 
+                    ? 'bg-green-600/20 text-green-400 border-green-500/50' 
+                    : 'bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-500/50 shadow-lg shadow-indigo-500/20'
+                }`}
               >
-                Copy to Clipboard
+                {copyFeedback ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                    <span>Copied!</span>
+                  </>
+                ) : (
+                  <span>Copy to Clipboard</span>
+                )}
               </button>
             </div>
           </div>
@@ -284,7 +323,12 @@ const MainApp = () => {
               autoFocus
             />
             <div className="flex justify-end space-x-3 pt-2">
-              <button onClick={() => setIsSaveAsOpen(false)} className="px-4 py-2 text-gray-400 hover:text-white">Cancel</button>
+              <button 
+                onClick={() => setIsSaveAsOpen(false)} 
+                className="px-4 py-2 text-gray-400 hover:text-red-400 transition-all active:scale-95 font-medium"
+              >
+                Cancel
+              </button>
               <button 
                 onClick={() => {
                   if (newFilterName.trim()) {
@@ -294,7 +338,7 @@ const MainApp = () => {
                   }
                 }}
                 disabled={!newFilterName.trim() || isSaving}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 transition-all active:scale-95 font-medium shadow-lg shadow-indigo-500/20"
               >
                 Save
               </button>
@@ -333,13 +377,13 @@ const MainApp = () => {
                       <button 
                         onClick={() => { loadFilter(filter.id); setIsLoadOpen(false); }}
                         disabled={activeFilterId === filter.id}
-                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-800 disabled:text-gray-500 text-white text-sm rounded-lg transition-colors"
+                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-800 disabled:text-gray-500 text-white text-sm rounded-lg transition-all active:scale-95 font-medium"
                       >
                         Load
                       </button>
                       <button 
                         onClick={() => setFilterToDelete(filter.id)}
-                        className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
+                        className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all active:scale-95"
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                       </button>
@@ -359,13 +403,18 @@ const MainApp = () => {
             <h3 className="text-xl font-bold text-white">Delete Filter</h3>
             <p className="text-gray-400">Are you sure you want to delete this filter? This action cannot be undone.</p>
             <div className="flex justify-end space-x-3 pt-2">
-              <button onClick={() => setFilterToDelete(null)} className="px-4 py-2 text-gray-400 hover:text-white">Cancel</button>
+              <button 
+                onClick={() => setFilterToDelete(null)} 
+                className="px-4 py-2 text-gray-400 hover:text-white transition-all active:scale-95 font-medium"
+              >
+                Cancel
+              </button>
               <button 
                 onClick={() => {
                   deleteFilter(filterToDelete);
                   setFilterToDelete(null);
                 }}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all active:scale-95 font-medium shadow-lg shadow-red-500/20"
               >
                 Delete
               </button>

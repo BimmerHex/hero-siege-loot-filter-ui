@@ -98,7 +98,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onCategoryClick }) => {
             <button 
               onClick={handleSuggest}
               disabled={isSuggesting || !buildName.trim()}
-              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium py-2 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium py-2 rounded-lg transition-all active:scale-95 flex items-center justify-center space-x-2 shadow-lg shadow-indigo-500/20"
             >
               {isSuggesting ? (
                 <>
@@ -124,7 +124,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onCategoryClick }) => {
           {ITEM_CATEGORIES.map(category => (
             <div key={category} className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden flex flex-col">
               <div 
-                className="px-6 py-4 border-b border-gray-800 bg-gray-900/80 hover:bg-gray-800 cursor-pointer transition-colors flex items-center justify-between group"
+                className="px-6 py-4 border-b border-gray-800 bg-gray-900/80 hover:bg-gray-800 cursor-pointer transition-all active:bg-gray-700 flex items-center justify-between group"
                 onClick={() => onCategoryClick(category)}
               >
                 <h2 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">{category}</h2>
@@ -136,7 +136,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onCategoryClick }) => {
                 {RARITIES.map(rarity => (
                   <div key={rarity} className="flex items-center justify-between">
                     <span 
-                      className={`text-sm font-medium cursor-pointer select-none hover:opacity-80 transition-opacity ${rarityColors[rarity]}`}
+                      className={`text-sm font-medium cursor-pointer select-none hover:opacity-80 transition-all active:scale-90 ${rarityColors[rarity]}`}
                       onClick={() => toggleRarity(category, rarity)}
                     >
                       {rarity}
