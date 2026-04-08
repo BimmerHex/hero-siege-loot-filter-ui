@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { Tier, TIERS, TierFilter } from '../types';
 
 interface TierCheckboxesProps {
@@ -10,7 +11,11 @@ export const TierCheckboxes: React.FC<TierCheckboxesProps> = ({ filter, onChange
   return (
     <div className="flex space-x-2">
       {TIERS.map((tier) => (
-        <label key={tier} className="flex items-center space-x-1 cursor-pointer group active:scale-90 transition-transform">
+        <motion.label 
+          key={tier} 
+          className="flex items-center space-x-1 cursor-pointer group transition-transform"
+          whileTap={{ scale: 0.9 }}
+        >
           <div className="relative flex items-center justify-center">
             <input
               type="checkbox"
@@ -26,10 +31,10 @@ export const TierCheckboxes: React.FC<TierCheckboxesProps> = ({ filter, onChange
               )}
             </div>
           </div>
-          <span className="text-sm font-medium text-gray-400 group-hover:text-gray-200 transition-colors w-4 text-center">
+          <span className="text-sm font-medium text-gray-400 group-hover:text-gray-200 transition-colors w-4 text-center select-none">
             {tier}
           </span>
-        </label>
+        </motion.label>
       ))}
     </div>
   );

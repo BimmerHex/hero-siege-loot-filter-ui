@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { ItemCategory, SOCKETS, Tier, ModState, TIERS, WEAPON_TYPES, ITEM_CATEGORIES } from '../types';
 import { useFilter } from '../context/FilterContext';
 import { ModTierCheckboxes } from './ModTierCheckboxes';
@@ -96,15 +97,16 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
     <div className="flex-1 overflow-y-auto bg-gray-950 text-gray-200 p-8 pt-20">
       <div className="max-w-[1600px] mx-auto space-y-8">
         
-        <button 
+        <motion.button 
           onClick={onBack}
-          className="flex items-center space-x-2 text-gray-400 hover:text-white transition-all active:scale-95 mb-4 group cursor-pointer"
+          className="flex items-center space-x-2 text-gray-400 hover:text-white transition-all mb-4 group cursor-pointer"
+          whileTap={{ scale: 0.95 }}
         >
           <svg className="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           <span>Back to Categories</span>
-        </button>
+        </motion.button>
 
         <header className="flex flex-col space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
@@ -114,7 +116,7 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
             </div>
             
             <div className="flex items-center space-x-3">
-              <button 
+              <motion.button 
                 onClick={() => {
                   copyModsToAll(category);
                   setCopyStatus('success-all');
@@ -123,8 +125,9 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 border ${
                   copyStatus === 'success-all' 
                     ? 'bg-green-600/20 text-green-400 border-green-500/50' 
-                    : 'bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border-indigo-500/30 active:scale-95'
+                    : 'bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border-indigo-500/30'
                 }`}
+                whileTap={{ scale: 0.95 }}
               >
                 {copyStatus === 'success-all' ? (
                   <>
@@ -141,16 +144,17 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
                     <span>Copy to All</span>
                   </>
                 )}
-              </button>
+              </motion.button>
 
               <div className="relative" ref={copyToMenuRef}>
-                <button 
+                <motion.button 
                   onClick={() => setShowCopyToMenu(!showCopyToMenu)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 border ${
                     copyStatus === 'success-specific'
                       ? 'bg-green-600/20 text-green-400 border-green-500/50'
-                      : 'bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 active:scale-95'
+                      : 'bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700'
                   }`}
+                  whileTap={{ scale: 0.95 }}
                 >
                   {copyStatus === 'success-specific' ? (
                     <>
@@ -170,7 +174,7 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
                   <svg className={`w-4 h-4 transition-transform ${showCopyToMenu ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                </button>
+                </motion.button>
 
                 {showCopyToMenu && (
                   <div className="absolute right-0 mt-2 w-56 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl z-50 py-2 overflow-hidden transition-all duration-200 origin-top-right">
@@ -225,7 +229,11 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
           </div>
           <div className="p-6 flex space-x-6">
             {SOCKETS.map(socket => (
-              <label key={socket} className="flex items-center space-x-2 cursor-pointer group">
+              <motion.label 
+                key={socket} 
+                className="flex items-center space-x-2 cursor-pointer group transition-transform"
+                whileTap={{ scale: 0.9 }}
+              >
                 <div className="relative flex items-center justify-center">
                   <input
                     type="checkbox"
@@ -241,10 +249,10 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
                     )}
                   </div>
                 </div>
-                <span className="text-sm font-medium text-gray-400 group-hover:text-gray-200 transition-colors">
+                <span className="text-sm font-medium text-gray-400 group-hover:text-gray-200 transition-colors select-none">
                   {socket}
                 </span>
-              </label>
+              </motion.label>
             ))}
           </div>
         </section>
@@ -258,7 +266,11 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-6">
                 {WEAPON_TYPES.map(weaponType => (
-                  <label key={weaponType} className="flex items-center space-x-3 cursor-pointer group">
+                  <motion.label 
+                    key={weaponType} 
+                    className="flex items-center space-x-3 cursor-pointer group transition-transform"
+                    whileTap={{ scale: 0.9 }}
+                  >
                     <div className="relative flex items-center justify-center">
                       <input
                         type="checkbox"
@@ -277,7 +289,7 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
                     <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors select-none">
                       {weaponType}
                     </span>
-                  </label>
+                  </motion.label>
                 ))}
               </div>
             </div>
@@ -294,7 +306,10 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
               </span>
             </div>
             <div className="flex items-center space-x-4">
-              <label className="flex items-center space-x-2 cursor-pointer group">
+              <motion.label 
+                className="flex items-center space-x-2 cursor-pointer group transition-transform"
+                whileTap={{ scale: 0.9 }}
+              >
                 <div className="relative flex items-center justify-center">
                   <input
                     type="checkbox"
@@ -313,7 +328,7 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
                 <span className="text-sm font-medium text-gray-400 group-hover:text-gray-200 transition-colors select-none">
                   Show Selected Only
                 </span>
-              </label>
+              </motion.label>
               <div className="relative">
                 <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -343,7 +358,7 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
                         return (
                           <div key={mod.id} className="flex flex-col space-y-1.5">
                             <span 
-                              className="font-medium text-gray-300 cursor-pointer hover:text-white select-none text-sm leading-tight transition-all active:scale-95 origin-left"
+                              className="font-medium text-gray-300 cursor-pointer hover:text-white select-none text-sm leading-tight transition-all origin-left"
                               onClick={() => toggleMod(mod.id, 'red')}
                               onContextMenu={(e) => { e.preventDefault(); toggleMod(mod.id, 'yellow'); }}
                             >

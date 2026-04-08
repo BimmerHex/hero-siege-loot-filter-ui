@@ -34,7 +34,7 @@ export const ModTierCheckboxes: React.FC<ModTierCheckboxesProps> = ({ filter, on
         return (
           <div 
             key={tier} 
-            className="flex items-center space-x-1 cursor-pointer group active:scale-90 transition-transform"
+            className="flex items-center space-x-1 cursor-pointer group transition-transform"
             onClick={(e) => handleLeftClick(e, tier)}
             onContextMenu={(e) => handleRightClick(e, tier)}
           >

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { ITEM_CATEGORIES, RARITIES, ItemCategory, Tier, Rarity, TIERS } from '../types';
 import { useFilter } from '../context/FilterContext';
 import { TierCheckboxes } from './TierCheckboxes';
@@ -95,10 +96,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onCategoryClick }) => {
               onChange={(e) => setBuildName(e.target.value)}
               className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
             />
-            <button 
+            <motion.button 
               onClick={handleSuggest}
               disabled={isSuggesting || !buildName.trim()}
-              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium py-2 rounded-lg transition-all active:scale-95 flex items-center justify-center space-x-2 shadow-lg shadow-indigo-500/20"
+              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium py-2 rounded-lg transition-all flex items-center justify-center space-x-2 shadow-lg shadow-indigo-500/20"
+              whileTap={{ scale: 0.95 }}
             >
               {isSuggesting ? (
                 <>
@@ -116,7 +118,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onCategoryClick }) => {
                   <span>Auto-Configure</span>
                 </>
               )}
-            </button>
+            </motion.button>
           </div>
         </header>
         
@@ -135,12 +137,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ onCategoryClick }) => {
               <div className="p-4 space-y-3 flex-1">
                 {RARITIES.map(rarity => (
                   <div key={rarity} className="flex items-center justify-between">
-                    <span 
-                      className={`text-sm font-medium cursor-pointer select-none hover:opacity-80 transition-all active:scale-90 ${rarityColors[rarity]}`}
+                    <motion.span 
+                      className={`text-sm font-medium cursor-pointer select-none hover:opacity-80 transition-all ${rarityColors[rarity]}`}
                       onClick={() => toggleRarity(category, rarity)}
+                      whileTap={{ scale: 0.9 }}
                     >
                       {rarity}
-                    </span>
+                    </motion.span>
                     <TierCheckboxes 
                       filter={config[category].rarities[rarity]} 
                       onChange={(tier, val) => handleRarityChange(category, rarity, tier, val)} 

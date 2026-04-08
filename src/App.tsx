@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import { FilterProvider, useFilter } from './context/FilterContext';
 import { HomeView } from './components/HomeView';
 import { ModView } from './components/ModView';
@@ -92,9 +93,10 @@ const MainApp = () => {
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Hero Siege Filter</h1>
           <p className="text-gray-400">Sign in to create and save your custom loot filter configurations.</p>
-          <button
+          <motion.button
             onClick={signInWithGoogle}
             className="w-full py-3 px-4 bg-white text-gray-900 font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2"
+            whileTap={{ scale: 0.98 }}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -103,7 +105,7 @@ const MainApp = () => {
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
             </svg>
             <span>Sign in with Google</span>
-          </button>
+          </motion.button>
         </div>
       </div>
     );
@@ -114,10 +116,11 @@ const MainApp = () => {
       <div className="flex-1 flex flex-col relative w-full">
         <div className="absolute top-0 right-0 p-4 flex items-center space-x-3 z-10">
           {activeFilterId && (
-            <button
+            <motion.button
               onClick={updateCurrentFilter}
               disabled={isSaving}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 disabled:opacity-50 flex items-center space-x-2 shadow-lg shadow-indigo-500/20"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all disabled:opacity-50 flex items-center space-x-2 shadow-lg shadow-indigo-500/20"
+              whileTap={{ scale: 0.95 }}
             >
               {isSaving ? (
                 <>
@@ -135,65 +138,71 @@ const MainApp = () => {
                   <span>Save ({activeFilter?.name})</span>
                 </>
               )}
-            </button>
+            </motion.button>
           )}
 
-          <button
+          <motion.button
             onClick={resetFilter}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all flex items-center space-x-2 border border-gray-700"
+            whileTap={{ scale: 0.95 }}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
             <span>New Filter</span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
             onClick={() => setIsSaveAsOpen(true)}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all flex items-center space-x-2 border border-gray-700"
+            whileTap={{ scale: 0.95 }}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             <span>Save As...</span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
             onClick={() => setIsImportOpen(true)}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all flex items-center space-x-2 border border-gray-700"
+            whileTap={{ scale: 0.95 }}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
             <span>Import</span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
             onClick={handleExport}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all flex items-center space-x-2 border border-gray-700"
+            whileTap={{ scale: 0.95 }}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
             <span>Export</span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
             onClick={() => setIsLoadOpen(true)}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all active:scale-95 flex items-center space-x-2 border border-gray-700"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all flex items-center space-x-2 border border-gray-700"
+            whileTap={{ scale: 0.95 }}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
             <span>Load Filter</span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
             onClick={logOut}
-            className="px-4 py-2 bg-red-900/30 hover:bg-red-900/60 text-red-200 text-sm font-medium rounded-lg transition-all active:scale-95 border border-red-900/50"
+            className="px-4 py-2 bg-red-900/30 hover:bg-red-900/60 text-red-200 text-sm font-medium rounded-lg transition-all border border-red-900/50"
+            whileTap={{ scale: 0.95 }}
           >
             Sign Out
-          </button>
+          </motion.button>
         </div>
         
         {viewMode === 'home' ? (
@@ -209,9 +218,9 @@ const MainApp = () => {
           <div className="bg-gray-900 p-6 rounded-xl border border-gray-800 w-[500px] space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-bold text-white">Import Filter</h3>
-              <button onClick={() => setIsImportOpen(false)} className="text-gray-400 hover:text-white">
+              <motion.button onClick={() => setIsImportOpen(false)} className="text-gray-400 hover:text-white" whileTap={{ scale: 0.9 }}>
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
+              </motion.button>
             </div>
             <p className="text-sm text-gray-400">Paste your Base64 encoded filter string below to import it.</p>
             <textarea 
@@ -223,20 +232,22 @@ const MainApp = () => {
             />
             {importError && <p className="text-red-400 text-sm">{importError}</p>}
             <div className="flex justify-end space-x-3 pt-2">
-              <button 
+              <motion.button 
                 onClick={() => setIsImportOpen(false)} 
-                className="px-4 py-2 text-gray-400 hover:text-red-400 transition-all active:scale-95 font-medium"
+                className="px-4 py-2 text-gray-400 hover:text-red-400 transition-all font-medium"
+                whileTap={{ scale: 0.95 }}
               >
                 Cancel
-              </button>
-              <button 
+              </motion.button>
+              <motion.button 
                 onClick={handleDownloadJson}
                 disabled={!importBase64.trim()}
-                className={`px-4 py-2 rounded-lg disabled:opacity-50 text-sm font-medium transition-all active:scale-95 border flex items-center space-x-2 ${
+                className={`px-4 py-2 rounded-lg disabled:opacity-50 text-sm font-medium transition-all border flex items-center space-x-2 ${
                   downloadFeedback 
                     ? 'bg-green-600/20 text-green-400 border-green-500/50' 
                     : 'bg-gray-800 hover:bg-gray-700 text-gray-200 border-gray-700'
                 }`}
+                whileTap={{ scale: 0.95 }}
               >
                 {downloadFeedback ? (
                   <>
@@ -246,14 +257,15 @@ const MainApp = () => {
                 ) : (
                   <span>Download JSON</span>
                 )}
-              </button>
-              <button 
+              </motion.button>
+              <motion.button 
                 onClick={handleImport}
                 disabled={!importBase64.trim()}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 text-sm font-medium transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 text-sm font-medium transition-all shadow-lg shadow-indigo-500/20"
+                whileTap={{ scale: 0.95 }}
               >
                 Import
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -265,9 +277,9 @@ const MainApp = () => {
           <div className="bg-gray-900 p-6 rounded-xl border border-gray-800 w-[500px] space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-bold text-white">Export Filter</h3>
-              <button onClick={() => setIsExportOpen(false)} className="text-gray-400 hover:text-white">
+              <motion.button onClick={() => setIsExportOpen(false)} className="text-gray-400 hover:text-white" whileTap={{ scale: 0.9 }}>
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
+              </motion.button>
             </div>
             <p className="text-sm text-gray-400">Copy the Base64 encoded filter string below to share or save it.</p>
             <textarea 
@@ -277,23 +289,25 @@ const MainApp = () => {
               onClick={e => (e.target as HTMLTextAreaElement).select()}
             />
             <div className="flex justify-end space-x-3 pt-2">
-              <button 
+              <motion.button 
                 onClick={() => setIsExportOpen(false)} 
-                className="px-4 py-2 text-gray-400 hover:text-red-400 transition-all active:scale-95 font-medium"
+                className="px-4 py-2 text-gray-400 hover:text-red-400 transition-all font-medium"
+                whileTap={{ scale: 0.95 }}
               >
                 Close
-              </button>
-              <button 
+              </motion.button>
+              <motion.button 
                 onClick={() => {
                   navigator.clipboard.writeText(exportBase64);
                   setCopyFeedback(true);
                   setTimeout(() => setCopyFeedback(false), 2000);
                 }}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-95 border flex items-center space-x-2 ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border flex items-center space-x-2 ${
                   copyFeedback 
                     ? 'bg-green-600/20 text-green-400 border-green-500/50' 
                     : 'bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-500/50 shadow-lg shadow-indigo-500/20'
                 }`}
+                whileTap={{ scale: 0.95 }}
               >
                 {copyFeedback ? (
                   <>
@@ -303,7 +317,7 @@ const MainApp = () => {
                 ) : (
                   <span>Copy to Clipboard</span>
                 )}
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -323,13 +337,14 @@ const MainApp = () => {
               autoFocus
             />
             <div className="flex justify-end space-x-3 pt-2">
-              <button 
+              <motion.button 
                 onClick={() => setIsSaveAsOpen(false)} 
-                className="px-4 py-2 text-gray-400 hover:text-red-400 transition-all active:scale-95 font-medium"
+                className="px-4 py-2 text-gray-400 hover:text-red-400 transition-all font-medium"
+                whileTap={{ scale: 0.95 }}
               >
                 Cancel
-              </button>
-              <button 
+              </motion.button>
+              <motion.button 
                 onClick={() => {
                   if (newFilterName.trim()) {
                     saveNewFilter(newFilterName.trim());
@@ -338,10 +353,11 @@ const MainApp = () => {
                   }
                 }}
                 disabled={!newFilterName.trim() || isSaving}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 transition-all active:scale-95 font-medium shadow-lg shadow-indigo-500/20"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 transition-all font-medium shadow-lg shadow-indigo-500/20"
+                whileTap={{ scale: 0.95 }}
               >
                 Save
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -353,9 +369,9 @@ const MainApp = () => {
           <div className="bg-gray-900 p-6 rounded-xl border border-gray-800 w-[500px] max-h-[80vh] flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">Load Filter</h3>
-              <button onClick={() => setIsLoadOpen(false)} className="text-gray-400 hover:text-white">
+              <motion.button onClick={() => setIsLoadOpen(false)} className="text-gray-400 hover:text-white" whileTap={{ scale: 0.9 }}>
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
+              </motion.button>
             </div>
             
             <div className="flex-1 overflow-y-auto space-y-2 pr-2">
@@ -374,19 +390,21 @@ const MainApp = () => {
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <button 
+                      <motion.button 
                         onClick={() => { loadFilter(filter.id); setIsLoadOpen(false); }}
                         disabled={activeFilterId === filter.id}
-                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-800 disabled:text-gray-500 text-white text-sm rounded-lg transition-all active:scale-95 font-medium"
+                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-800 disabled:text-gray-500 text-white text-sm rounded-lg transition-all font-medium"
+                        whileTap={{ scale: 0.95 }}
                       >
                         Load
-                      </button>
-                      <button 
+                      </motion.button>
+                      <motion.button 
                         onClick={() => setFilterToDelete(filter.id)}
-                        className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all active:scale-95"
+                        className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                        whileTap={{ scale: 0.95 }}
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                      </button>
+                      </motion.button>
                     </div>
                   </div>
                 ))
@@ -403,21 +421,23 @@ const MainApp = () => {
             <h3 className="text-xl font-bold text-white">Delete Filter</h3>
             <p className="text-gray-400">Are you sure you want to delete this filter? This action cannot be undone.</p>
             <div className="flex justify-end space-x-3 pt-2">
-              <button 
+              <motion.button 
                 onClick={() => setFilterToDelete(null)} 
-                className="px-4 py-2 text-gray-400 hover:text-white transition-all active:scale-95 font-medium"
+                className="px-4 py-2 text-gray-400 hover:text-white transition-all font-medium"
+                whileTap={{ scale: 0.95 }}
               >
                 Cancel
-              </button>
-              <button 
+              </motion.button>
+              <motion.button 
                 onClick={() => {
                   deleteFilter(filterToDelete);
                   setFilterToDelete(null);
                 }}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all active:scale-95 font-medium shadow-lg shadow-red-500/20"
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all font-medium shadow-lg shadow-red-500/20"
+                whileTap={{ scale: 0.95 }}
               >
                 Delete
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
