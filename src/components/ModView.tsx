@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ItemCategory, SOCKETS, Tier, ModState, TIERS, WEAPON_TYPES } from '../types';
+import React, { useState, useRef, useEffect } from 'react';
+import { ItemCategory, SOCKETS, Tier, ModState, TIERS, WEAPON_TYPES, ITEM_CATEGORIES } from '../types';
 import { useFilter } from '../context/FilterContext';
 import { ModTierCheckboxes } from './ModTierCheckboxes';
 import { ITEM_MODS } from '../data';
@@ -10,12 +10,32 @@ interface ModViewProps {
 }
 
 export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
-  const { config, updateConfig } = useFilter();
+  const { config, updateConfig, copyModsToAll, copyModsToSpecific } = useFilter();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+  const [showCopyToMenu, setShowCopyToMenu] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'success-all' | 'success-specific'>('idle');
+  const copyToMenuRef = useRef<HTMLDivElement>(null);
   
   const itemConfig = config[category];
   const mods = ITEM_MODS[category];
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (copyToMenuRef.current && !copyToMenuRef.current.contains(event.target as Node)) {
+        setShowCopyToMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (copyStatus !== 'idle') {
+      const timer = setTimeout(() => setCopyStatus('idle'), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [copyStatus]);
 
   const selectedModsCount = mods.filter(mod => {
     const modFilter = itemConfig.mods[mod.id];
@@ -86,9 +106,98 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
         </button>
 
         <header className="flex flex-col space-y-4">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">{category} Mods & Sockets</h1>
-            <p className="text-gray-400">Configure specific mods and socket requirements for {category.toLowerCase()} drops.</p>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+            <div>
+              <h1 className="text-3xl font-bold text-white mb-2">{category} Mods & Sockets</h1>
+              <p className="text-gray-400">Configure specific mods and socket requirements for {category.toLowerCase()} drops.</p>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              <button 
+                onClick={() => {
+                  copyModsToAll(category);
+                  setCopyStatus('success-all');
+                }}
+                disabled={copyStatus === 'success-all'}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 border ${
+                  copyStatus === 'success-all' 
+                    ? 'bg-green-600/20 text-green-400 border-green-500/50' 
+                    : 'bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border-indigo-500/30 active:scale-95'
+                }`}
+              >
+                {copyStatus === 'success-all' ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Copied to All!</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                    <span>Copy to All</span>
+                  </>
+                )}
+              </button>
+
+              <div className="relative" ref={copyToMenuRef}>
+                <button 
+                  onClick={() => setShowCopyToMenu(!showCopyToMenu)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 border ${
+                    copyStatus === 'success-specific'
+                      ? 'bg-green-600/20 text-green-400 border-green-500/50'
+                      : 'bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 active:scale-95'
+                  }`}
+                >
+                  {copyStatus === 'success-specific' ? (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      <span>Copy to...</span>
+                    </>
+                  )}
+                  <svg className={`w-4 h-4 transition-transform ${showCopyToMenu ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {showCopyToMenu && (
+                  <div className="absolute right-0 mt-2 w-56 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl z-50 py-2 overflow-hidden transition-all duration-200 origin-top-right">
+                    <div className="px-3 py-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      Select target category
+                    </div>
+                    <div className="max-h-64 overflow-y-auto custom-scrollbar">
+                      {ITEM_CATEGORIES.filter(cat => cat !== category).map(cat => (
+                        <button
+                          key={cat}
+                          onClick={() => {
+                            copyModsToSpecific(category, cat);
+                            setShowCopyToMenu(false);
+                            setCopyStatus('success-specific');
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-indigo-600 hover:text-white transition-colors flex items-center justify-between group"
+                        >
+                          <span>{cat}</span>
+                          <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
           
           {itemConfig.aiExplanation && (

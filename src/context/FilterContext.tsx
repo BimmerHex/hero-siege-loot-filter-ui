@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { AppFilterConfig, createDefaultAppFilterConfig, SavedFilter } from '../types';
+import { AppFilterConfig, createDefaultAppFilterConfig, SavedFilter, ItemCategory, ITEM_CATEGORIES } from '../types';
 import { auth, db } from '../services/firebase';
 import { doc, onSnapshot, setDoc, collection, deleteDoc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -16,6 +16,8 @@ interface FilterContextType {
   loadFilter: (id: string) => Promise<void>;
   deleteFilter: (id: string) => Promise<void>;
   resetFilter: () => void;
+  copyModsToAll: (sourceCategory: ItemCategory) => void;
+  copyModsToSpecific: (sourceCategory: ItemCategory, targetCategory: ItemCategory) => void;
   isSaving: boolean;
 }
 
@@ -150,11 +152,45 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setActiveFilterId(null);
   };
 
+  const copyModsToAll = (sourceCategory: ItemCategory) => {
+    setConfig(prevConfig => {
+      const sourceMods = JSON.parse(JSON.stringify(prevConfig[sourceCategory].mods));
+      const newConfig = { ...prevConfig };
+      
+      ITEM_CATEGORIES.forEach(cat => {
+        if (cat !== sourceCategory) {
+          newConfig[cat] = {
+            ...newConfig[cat],
+            mods: JSON.parse(JSON.stringify(sourceMods))
+          };
+        }
+      });
+      
+      console.log(`Copied mods from ${sourceCategory} to all other categories`);
+      return newConfig;
+    });
+  };
+
+  const copyModsToSpecific = (sourceCategory: ItemCategory, targetCategory: ItemCategory) => {
+    setConfig(prevConfig => {
+      const sourceMods = JSON.parse(JSON.stringify(prevConfig[sourceCategory].mods));
+      const newConfig = { ...prevConfig };
+      
+      newConfig[targetCategory] = {
+        ...newConfig[targetCategory],
+        mods: JSON.parse(JSON.stringify(sourceMods))
+      };
+      
+      console.log(`Copied mods from ${sourceCategory} to ${targetCategory}`);
+      return newConfig;
+    });
+  };
+
   return (
     <FilterContext.Provider value={{ 
       config, updateConfig, userId, isAuthReady, isSaving,
       savedFilters, activeFilterId, saveNewFilter, updateCurrentFilter, loadFilter, deleteFilter,
-      resetFilter
+      resetFilter, copyModsToAll, copyModsToSpecific
     }}>
       {children}
     </FilterContext.Provider>
