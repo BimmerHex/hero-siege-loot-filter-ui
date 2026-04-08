@@ -80,10 +80,11 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
     updateConfig(newConfig);
   };
 
-  const toggleMod = (modId: string) => {
+  const toggleMod = (modId: string, state: 'red' | 'yellow') => {
     const currentFilter = itemConfig.mods[modId] || { D: false, C: false, B: false, A: false, S: false };
-    const allChecked = TIERS.every(t => currentFilter[t] !== false);
-    const newValue: ModState = allChecked ? false : 'red';
+    const allOfState = TIERS.every(t => currentFilter[t] === state);
+    const newValue: ModState = allOfState ? false : state;
+    
     const newConfig = { ...config };
     newConfig[category].mods[modId] = {
       D: newValue, C: newValue, B: newValue, A: newValue, S: newValue
@@ -343,7 +344,8 @@ export const ModView: React.FC<ModViewProps> = ({ category, onBack }) => {
                           <div key={mod.id} className="flex flex-col space-y-1.5">
                             <span 
                               className="font-medium text-gray-300 cursor-pointer hover:text-white select-none text-sm leading-tight transition-all active:scale-95 origin-left"
-                              onClick={() => toggleMod(mod.id)}
+                              onClick={() => toggleMod(mod.id, 'red')}
+                              onContextMenu={(e) => { e.preventDefault(); toggleMod(mod.id, 'yellow'); }}
                             >
                               {mod.name}
                             </span>
